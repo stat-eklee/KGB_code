@@ -130,20 +130,20 @@ class Evaluator:
         ent_confs = []
         # mr -> sent
         mr2sent = self.roberta_classify(' '.join(templs), sent)
-        #raw_results = {'mr2sent': "C: %.4f N: %.4f E: %.4f" % tuple(mr2sent)}
+        raw_results = {'mr2sent': "C: %.4f N: %.4f E: %.4f" % tuple(mr2sent)}
         #logger.debug("--> " + raw_results['mr2sent'])
-        raw_results = {'mr2sent': "E: %.4f N: %.4f C: %.4f" % tuple(mr2sent)}
+        #raw_results = {'mr2sent': "E: %.4f N: %.4f C: %.4f" % tuple(mr2sent)}
 
         ent_confs.append(float(mr2sent[2]))
-        #mr2sent = ['C', 'N', 'E'][np.argmax(mr2sent)]
-        mr2sent = ['E', 'N', 'C'][np.argmax(mr2sent)]
+        mr2sent = ['C', 'N', 'E'][np.argmax(mr2sent)]
+        #mr2sent = ['E', 'N', 'C'][np.argmax(mr2sent)]
         # sent -> mr (remove optional templates/triples, where optional is True)
         sent2mr = self.roberta_classify(sent, ' '.join([t for t, o in zip(templs, opts) if not o]))
         raw_results['sent2mr'] = "C: %.4f N: %.4f E: %.4f" % tuple(sent2mr)
         logger.debug("<-- " + raw_results['sent2mr'])
         ent_confs.append(float(sent2mr[2]))
-        #sent2mr = ['C', 'N', 'E'][np.argmax(sent2mr)]
-        sent2mr = ['E', 'N', 'C'][np.argmax(sent2mr)]
+        sent2mr = ['C', 'N', 'E'][np.argmax(sent2mr)]
+        #sent2mr = ['E', 'N', 'C'][np.argmax(sent2mr)]
 
         if sent2mr == 'E' and mr2sent == 'E':
             output = 'OK'
@@ -161,11 +161,11 @@ class Evaluator:
             if optional:  # skip optional templates/triples
                 continue
             sent2triple = self.roberta_classify(sent, templ)
-            # ent_confs.append(float(sent2triple[2]))
-            ent_confs.append(float(sent2triple[0]))
+            ent_confs.append(float(sent2triple[2]))
+            #ent_confs.append(float(sent2triple[0]))
 
-            #sent2triple = ['C', 'N', 'E'][np.argmax(sent2triple)]
-            sent2triple = ['E', 'N', 'C'][np.argmax(sent2triple)]
+            sent2triple = ['C', 'N', 'E'][np.argmax(sent2triple)]
+            #sent2triple = ['E', 'N', 'C'][np.argmax(sent2triple)]
 
             if sent2triple != 'E':
                 omitted.append(triple)
